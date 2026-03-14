@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import Navbar from './components/Navbar'
+import ChatBot from './components/ChatBot'
 import Home from './pages/Home'
 import Dashboard from './pages/Dashboard'
 import Analyze from './pages/Analyze'
@@ -30,6 +31,7 @@ export default function App() {
           <Page onNavigate={setPage} />
         </main>
         {mobile && <Navbar currentPage={page} onNavigate={setPage} mobile />}
+        <ChatBot />
       </div>
     </ThemeProvider>
   )

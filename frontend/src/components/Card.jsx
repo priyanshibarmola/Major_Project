@@ -1,11 +1,15 @@
-export default function Card({ children, className = '', hover = false, ...props }) {
+export default function Card({ children, className = '', hover = false, glass = false, glow, ...props }) {
+  const glowRing = glow ? `ring-1 ring-${glow}-400/20 dark:ring-${glow}-500/10` : ''
   return (
     <div
       className={`
-        rounded-2xl bg-white dark:bg-earth-800/50 
-        border border-earth-200 dark:border-earth-700
+        rounded-2xl
+        ${glass
+          ? 'glass'
+          : 'bg-white dark:bg-earth-800/50 border border-earth-200 dark:border-earth-700'}
         shadow-sm dark:shadow-none
-        ${hover ? 'hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200' : ''}
+        ${hover ? 'hover:shadow-xl hover:-translate-y-1 transition-all duration-300 cursor-pointer' : 'transition-shadow duration-200'}
+        ${glowRing}
         ${className}
       `}
       {...props}
@@ -15,7 +19,7 @@ export default function Card({ children, className = '', hover = false, ...props
   )
 }
 
-export function CardHeader({ icon: Icon, title, className = '' }) {
+export function CardHeader({ icon: Icon, title, badge, className = '' }) {
   return (
     <div className={`flex items-center gap-3 p-6 pb-0 ${className}`}>
       {Icon && (
@@ -24,6 +28,11 @@ export function CardHeader({ icon: Icon, title, className = '' }) {
         </div>
       )}
       <h3 className="font-semibold text-earth-800 dark:text-earth-100">{title}</h3>
+      {badge && (
+        <span className="ml-auto text-xs font-semibold px-2.5 py-1 rounded-full bg-sage-100 dark:bg-sage-900/40 text-sage-700 dark:text-sage-300">
+          {badge}
+        </span>
+      )}
     </div>
   )
 }

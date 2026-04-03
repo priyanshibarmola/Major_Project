@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Sprout, Bot, User } from 'lucide-react'
 
-// Gemini API config
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || ''
 const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash'
 
@@ -28,15 +27,11 @@ export default function ChatBot() {
   const inputRef = useRef(null)
 
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight
-    }
+    if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight
   }, [messages, loading])
 
   useEffect(() => {
-    if (open && inputRef.current) {
-      inputRef.current.focus()
-    }
+    if (open && inputRef.current) inputRef.current.focus()
   }, [open])
 
   const sendMessage = async () => {
@@ -50,20 +45,13 @@ export default function ChatBot() {
     setLoading(true)
 
     if (!API_KEY) {
-      setMessages([...updated, {
-        role: 'assistant',
-        content: getFallbackResponse(text),
-      }])
+      setMessages([...updated, { role: 'assistant', content: getFallbackResponse(text) }])
       setLoading(false)
       return
     }
 
     try {
-      const chatHistory = updated
-        .filter((m) => m.role === 'user' || m.role === 'assistant')
-        .slice(-10)
-
-      // Build Gemini contents format
+      const chatHistory = updated.filter((m) => m.role === 'user' || m.role === 'assistant').slice(-10)
       const contents = [
         { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
         { role: 'model', parts: [{ text: 'Understood. I am AgriSmart Assistant, ready to help with agriculture questions.' }] },
@@ -77,10 +65,7 @@ export default function ChatBot() {
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          contents,
-          generationConfig: { maxOutputTokens: 500, temperature: 0.7 },
-        }),
+        body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 500, temperature: 0.7 } }),
       })
 
       if (!res.ok) {
@@ -115,10 +100,10 @@ export default function ChatBot() {
         onClick={() => setOpen((v) => !v)}
         className={`
           fixed z-50 w-14 h-14 rounded-full shadow-xl flex items-center justify-center
-          transition-all duration-200 active:scale-95
+          transition-all duration-300 active:scale-95
           ${open
-            ? 'bg-earth-600 hover:bg-earth-700 bottom-6 right-6'
-            : 'bg-sage-600 hover:bg-sage-700 bottom-6 right-6 md:bottom-8 md:right-8'}
+            ? 'bg-earth-600 hover:bg-earth-700 bottom-6 right-6 rotate-90'
+            : 'bg-gradient-to-br from-sage-500 to-sage-700 hover:from-sage-600 hover:to-sage-800 bottom-6 right-6 md:bottom-8 md:right-8 glow-sage rotate-0'}
         `}
         style={{ bottom: 'env(safe-area-inset-bottom, 24px)' }}
         aria-label={open ? 'Close chat' : 'Open chat'}
@@ -128,31 +113,34 @@ export default function ChatBot() {
 
       {/* Chat panel */}
       {open && (
-        <div className="fixed z-40 bottom-24 right-4 md:right-8 w-[360px] max-w-[calc(100vw-2rem)] h-[500px] max-h-[70vh] flex flex-col rounded-2xl overflow-hidden shadow-2xl border border-earth-200 dark:border-earth-700 bg-white dark:bg-earth-900">
+        <div className="fixed z-40 bottom-24 right-4 md:right-8 w-[380px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[70vh] flex flex-col rounded-2xl overflow-hidden shadow-2xl border border-earth-200/50 dark:border-earth-700/50 glass page-enter">
           {/* Header */}
-          <div className="flex items-center gap-3 px-5 py-4 bg-sage-600 dark:bg-sage-800 text-white shrink-0">
-            <div className="w-9 h-9 rounded-lg bg-white/20 flex items-center justify-center">
+          <div className="flex items-center gap-3 px-5 py-4 bg-gradient-to-r from-sage-600 to-sage-700 dark:from-sage-700 dark:to-sage-800 text-white shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
               <Sprout className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-semibold text-sm">AgriSmart Assistant</h3>
-              <p className="text-sage-200 text-xs">Agriculture AI helper</p>
+              <h3 className="font-bold text-sm">AgriSmart Assistant</h3>
+              <p className="text-sage-200 text-xs flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+                Online · Agriculture AI
+              </p>
             </div>
           </div>
 
           {/* Messages */}
-          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+          <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 bg-earth-50/50 dark:bg-earth-950/50">
             {messages.map((msg, i) => (
               <div key={i} className={`flex gap-2.5 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-sage-100 dark:bg-sage-900/50' : 'bg-earth-100 dark:bg-earth-800'}`}>
+                <div className={`w-8 h-8 rounded-xl flex items-center justify-center shrink-0 ${msg.role === 'user' ? 'bg-sage-100 dark:bg-sage-900/50' : 'bg-white dark:bg-earth-800 shadow-sm'}`}>
                   {msg.role === 'user'
                     ? <User className="w-4 h-4 text-sage-700 dark:text-sage-300" />
-                    : <Bot className="w-4 h-4 text-earth-600 dark:text-earth-300" />}
+                    : <Bot className="w-4 h-4 text-sage-600 dark:text-sage-400" />}
                 </div>
-                <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed ${
+                <div className={`max-w-[75%] px-4 py-2.5 rounded-2xl text-sm leading-relaxed shadow-sm ${
                   msg.role === 'user'
                     ? 'bg-sage-600 text-white rounded-tr-md'
-                    : 'bg-earth-100 dark:bg-earth-800 text-earth-800 dark:text-earth-100 rounded-tl-md'
+                    : 'bg-white dark:bg-earth-800 text-earth-800 dark:text-earth-100 rounded-tl-md border border-earth-100 dark:border-earth-700'
                 }`}>
                   {msg.content}
                 </div>
@@ -160,14 +148,14 @@ export default function ChatBot() {
             ))}
             {loading && (
               <div className="flex gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-earth-100 dark:bg-earth-800 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-earth-600 dark:text-earth-300" />
+                <div className="w-8 h-8 rounded-xl bg-white dark:bg-earth-800 shadow-sm flex items-center justify-center">
+                  <Bot className="w-4 h-4 text-sage-600 dark:text-sage-400" />
                 </div>
-                <div className="px-4 py-3 rounded-2xl rounded-tl-md bg-earth-100 dark:bg-earth-800">
+                <div className="px-4 py-3 rounded-2xl rounded-tl-md bg-white dark:bg-earth-800 shadow-sm border border-earth-100 dark:border-earth-700">
                   <div className="flex gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-earth-400 animate-bounce" style={{ animationDelay: '0ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-earth-400 animate-bounce" style={{ animationDelay: '150ms' }} />
-                    <span className="w-2 h-2 rounded-full bg-earth-400 animate-bounce" style={{ animationDelay: '300ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-sage-400 animate-bounce" style={{ animationDelay: '0ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-sage-400 animate-bounce" style={{ animationDelay: '150ms' }} />
+                    <span className="w-2 h-2 rounded-full bg-sage-400 animate-bounce" style={{ animationDelay: '300ms' }} />
                   </div>
                 </div>
               </div>
@@ -175,7 +163,7 @@ export default function ChatBot() {
           </div>
 
           {/* Input */}
-          <div className="shrink-0 px-4 py-3 border-t border-earth-200 dark:border-earth-700 bg-white dark:bg-earth-900">
+          <div className="shrink-0 px-4 py-3 border-t border-earth-200/50 dark:border-earth-700/50 bg-white/80 dark:bg-earth-900/80 backdrop-blur-sm">
             <div className="flex gap-2 items-end">
               <textarea
                 ref={inputRef}
@@ -184,12 +172,12 @@ export default function ChatBot() {
                 onKeyDown={handleKeyDown}
                 placeholder="Ask about crops, soil, farming..."
                 rows={1}
-                className="flex-1 resize-none px-4 py-2.5 rounded-xl border border-earth-200 dark:border-earth-700 bg-earth-50 dark:bg-earth-800 text-earth-800 dark:text-earth-100 placeholder-earth-400 text-sm focus:ring-2 focus:ring-sage-500 focus:border-sage-500 outline-none"
+                className="flex-1 resize-none px-4 py-2.5 rounded-xl border border-earth-200 dark:border-earth-700 bg-earth-50 dark:bg-earth-800 text-earth-800 dark:text-earth-100 placeholder-earth-400 text-sm focus:ring-2 focus:ring-sage-500/40 focus:border-sage-500 outline-none transition-all"
               />
               <button
                 onClick={sendMessage}
                 disabled={!input.trim() || loading}
-                className="w-10 h-10 rounded-xl bg-sage-600 hover:bg-sage-700 disabled:opacity-50 disabled:hover:bg-sage-600 flex items-center justify-center transition-colors shrink-0"
+                className="w-10 h-10 rounded-xl bg-gradient-to-br from-sage-500 to-sage-700 hover:from-sage-600 hover:to-sage-800 disabled:opacity-50 disabled:hover:from-sage-500 flex items-center justify-center transition-all shrink-0 shadow-md"
               >
                 <Send className="w-4 h-4 text-white" />
               </button>
@@ -203,30 +191,17 @@ export default function ChatBot() {
 
 function getFallbackResponse(text) {
   const lower = text.toLowerCase()
-
-  if (lower.includes('crop') && (lower.includes('recommend') || lower.includes('suggest') || lower.includes('best'))) {
+  if (lower.includes('crop') && (lower.includes('recommend') || lower.includes('suggest') || lower.includes('best')))
     return "To get crop recommendations, go to the Analyze page and enter your soil data (N, P, K, pH, etc.). The ML model will suggest the best crop for your conditions. Common recommendations include rice for high-rainfall areas, wheat for moderate climates, and maize for well-drained soils."
-  }
-
-  if (lower.includes('soil') && (lower.includes('health') || lower.includes('improve') || lower.includes('quality'))) {
+  if (lower.includes('soil') && (lower.includes('health') || lower.includes('improve') || lower.includes('quality')))
     return "Soil health depends on nutrient levels (N, P, K), micronutrients (Zn, Fe, Mn), pH, and organic matter. To improve soil health:\n\n1. Test your soil regularly\n2. Add organic compost to improve structure\n3. Rotate crops to prevent nutrient depletion\n4. Maintain pH between 6.0-7.5 for most crops\n5. Use the Analyze page to get a health score!"
-  }
-
-  if (lower.includes('fertilizer') || lower.includes('nutrient')) {
+  if (lower.includes('fertilizer') || lower.includes('nutrient'))
     return "Fertilizer needs depend on your soil's nutrient levels. Run a soil analysis on the Analyze page to get specific recommendations. General tips:\n\n- Low Nitrogen: Apply Urea (40-60 kg/ha)\n- Low Phosphorus: Use DAP or SSP (30-50 kg/ha)\n- Low Potassium: Apply MOP (20-40 kg/ha)\n- Low pH: Add agricultural lime"
-  }
-
-  if (lower.includes('yield') || lower.includes('harvest') || lower.includes('production')) {
+  if (lower.includes('yield') || lower.includes('harvest') || lower.includes('production'))
     return "Yield depends on soil quality, weather, crop variety, and farming practices. Use the Analyze page to get a yield prediction based on your inputs. To maximize yield:\n\n1. Choose crops suited to your soil and climate\n2. Ensure proper irrigation\n3. Apply fertilizers based on soil testing\n4. Practice timely sowing and harvesting"
-  }
-
-  if (lower.includes('ph')) {
+  if (lower.includes('ph'))
     return "Soil pH affects nutrient availability:\n\n- Below 6.0 (acidic): Add agricultural lime (200-400 kg/ha)\n- 6.0-7.5 (optimal): Most crops thrive here\n- Above 7.5 (alkaline): Add organic compost or elemental sulfur\n\nRun a soil analysis on the Analyze page to check your soil's pH and get specific suggestions."
-  }
-
-  if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey')) {
+  if (lower.includes('hello') || lower.includes('hi') || lower.includes('hey'))
     return "Hello! I'm here to help with your farming questions. You can ask me about:\n\n- Crop recommendations\n- Soil health & pH\n- Fertilizer suggestions\n- Yield optimization\n\nOr go to the Analyze page to run a full soil analysis!"
-  }
-
   return "Great question! For the most accurate answer, I'd recommend running a soil analysis on the Analyze page with your specific data. I can help with general questions about crops, soil health, fertilizers, and farming practices. What would you like to know more about?"
 }

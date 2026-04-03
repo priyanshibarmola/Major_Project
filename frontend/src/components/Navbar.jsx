@@ -16,10 +16,10 @@ export default function Navbar({ currentPage, onNavigate, mobile }) {
 
   if (mobile) {
     return (
-      <div className="fixed bottom-0 left-0 right-0 z-50 bg-white/90 dark:bg-earth-900/95 backdrop-blur-lg border-t border-earth-200 dark:border-earth-700 safe-area-pb">
+      <div className="fixed bottom-0 left-0 right-0 z-50 glass border-t border-earth-200/50 dark:border-earth-700/50 safe-area-pb">
         <div className="flex items-center justify-around py-2 px-2 max-w-lg mx-auto gap-1">
           {!isOnline && (
-            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200">
+            <span className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 shadow-sm">
               <CloudOff className="w-3 h-3" /> Offline
             </span>
           )}
@@ -28,11 +28,16 @@ export default function Navbar({ currentPage, onNavigate, mobile }) {
               key={item.id}
               onClick={() => onNavigate(item.id)}
               className={`
-                flex flex-col items-center gap-1 px-4 py-2 rounded-xl min-w-[64px]
-                ${currentPage === item.id ? 'text-sage-600 dark:text-sage-400' : 'text-earth-500 dark:text-earth-500'}
+                relative flex flex-col items-center gap-1 px-4 py-2 rounded-xl min-w-[64px] transition-all duration-200
+                ${currentPage === item.id
+                  ? 'text-sage-600 dark:text-sage-400'
+                  : 'text-earth-500 dark:text-earth-500 hover:text-earth-700 dark:hover:text-earth-300'}
               `}
             >
-              <item.icon className="w-6 h-6" />
+              {currentPage === item.id && (
+                <span className="absolute -top-1 left-1/2 -translate-x-1/2 w-6 h-1 rounded-full bg-sage-500" />
+              )}
+              <item.icon className="w-5 h-5" />
               <span className="text-xs font-medium">{item.label}</span>
             </button>
           ))}
@@ -42,32 +47,31 @@ export default function Navbar({ currentPage, onNavigate, mobile }) {
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-white/80 dark:bg-earth-900/80 backdrop-blur-xl border-b border-earth-200 dark:border-earth-700">
+    <header className="sticky top-0 z-40 glass border-b border-earth-200/50 dark:border-earth-700/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16 gap-4">
-        <div className="flex items-center gap-3">
+        <button onClick={() => onNavigate('home')} className="flex items-center gap-2.5 group">
           {!isOnline && (
-            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200">
+            <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-100 dark:bg-amber-900/50 text-amber-800 dark:text-amber-200 mr-2">
               <CloudOff className="w-3.5 h-3.5" /> Offline
             </span>
           )}
-          <div className="flex items-center gap-2">
-          <div className="w-9 h-9 rounded-lg bg-sage-500 flex items-center justify-center">
+          <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-sage-500 to-sage-700 flex items-center justify-center shadow-lg shadow-sage-500/25 group-hover:shadow-sage-500/40 transition-shadow">
             <Sprout className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-earth-800 dark:text-earth-100">AgriSmart</span>
-          </div>
-        </div>
-        <nav className="flex items-center gap-1">
+          <span className="font-extrabold text-earth-800 dark:text-earth-100 tracking-tight text-lg">AgriSmart</span>
+        </button>
+
+        <nav className="flex items-center gap-0.5 bg-earth-100/60 dark:bg-earth-800/40 rounded-2xl p-1">
           {navItems.map((item) => (
             <button
               key={item.id}
               onClick={() => onNavigate(item.id)}
               className={`
-                flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-medium
-                transition-colors hidden sm:flex
+                relative flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium
+                transition-all duration-200 hidden sm:flex
                 ${currentPage === item.id
-                  ? 'bg-sage-100 dark:bg-sage-900/50 text-sage-700 dark:text-sage-300'
-                  : 'text-earth-600 dark:text-earth-400 hover:bg-earth-100 dark:hover:bg-earth-800'}
+                  ? 'bg-white dark:bg-earth-700 text-sage-700 dark:text-sage-300 shadow-md'
+                  : 'text-earth-500 dark:text-earth-400 hover:text-earth-700 dark:hover:text-earth-200'}
               `}
             >
               <item.icon className="w-4 h-4 shrink-0" />
@@ -75,12 +79,13 @@ export default function Navbar({ currentPage, onNavigate, mobile }) {
             </button>
           ))}
         </nav>
+
         <button
           onClick={toggle}
           className="p-2.5 rounded-xl hover:bg-earth-100 dark:hover:bg-earth-800 transition-colors"
           aria-label="Toggle theme"
         >
-          {dark ? <Sun className="w-5 h-5" /> : <Moon className="w-5 h-5" />}
+          {dark ? <Sun className="w-5 h-5 text-amber-500" /> : <Moon className="w-5 h-5 text-earth-500" />}
         </button>
       </div>
     </header>

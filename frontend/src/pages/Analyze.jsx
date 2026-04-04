@@ -6,7 +6,7 @@ import FormInput from '../components/FormInput'
 import LoadingSpinner from '../components/LoadingSpinner'
 import { useOfflineResults } from '../hooks/useOfflineResults'
 
-const API_URL = import.meta.env.VITE_API_URL ?? 
+const API_URL = import.meta.env.VITE_API_URL;
 
 const initialForm = {
   district: '',

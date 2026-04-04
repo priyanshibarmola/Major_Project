@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Sprout, Bot, User } from 'lucide-react'
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || ''
-const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.0-flash'
+const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.5-flash'
 
 const SYSTEM_PROMPT = `You are AgriSmart Assistant, an AI-powered agriculture expert chatbot. You help farmers and agricultural enthusiasts with:
 - Crop recommendations based on soil and weather conditions

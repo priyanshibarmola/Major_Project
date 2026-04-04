@@ -5,6 +5,9 @@ from google import genai
 router = APIRouter()
 
 # Create client (NEW way)
+import os
+print("KEY VALUE:", os.getenv("GEMINI_API_KEY"))
+
 client = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
 
 @router.post("/api/chat")

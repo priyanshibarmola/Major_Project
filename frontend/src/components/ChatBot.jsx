@@ -3,6 +3,7 @@ import { MessageCircle, X, Send, Sprout, Bot, User } from 'lucide-react'
 
 const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || ''
 const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.5-flash'
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 const SYSTEM_PROMPT = `You are AgriSmart Assistant, an AI-powered agriculture expert chatbot. You help farmers and agricultural enthusiasts with:
 - Crop recommendations based on soil and weather conditions

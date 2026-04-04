@@ -3,6 +3,7 @@ import logging
 import os
 from pathlib import Path
 
+from app.routes.chat import router as chat_router
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -12,6 +13,7 @@ from app.services import predict_crop, predict_yield
 from app.soil_engine import compute_soil_health
 from app.fertilizer_engine import recommend_fertilizer
 
+app.include_router(chat_router)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 

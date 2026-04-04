@@ -1,8 +1,6 @@
 import { useState, useRef, useEffect } from 'react'
 import { MessageCircle, X, Send, Sprout, Bot, User } from 'lucide-react'
 
-const API_KEY = import.meta.env.VITE_GEMINI_API_KEY || ''
-const MODEL = import.meta.env.VITE_GEMINI_MODEL || 'gemini-2.5-flash'
 const BASE_URL = import.meta.env.VITE_API_URL;
 
 const SYSTEM_PROMPT = `You are AgriSmart Assistant, an AI-powered agriculture expert chatbot. You help farmers and agricultural enthusiasts with:
@@ -45,38 +43,27 @@ export default function ChatBot() {
     setInput('')
     setLoading(true)
 
-    if (!API_KEY) {
-      setMessages([...updated, { role: 'assistant', content: getFallbackResponse(text) }])
-      setLoading(false)
-      return
-    }
-
     try {
-      const chatHistory = updated.filter((m) => m.role === 'user' || m.role === 'assistant').slice(-10)
-      const contents = [
-        { role: 'user', parts: [{ text: SYSTEM_PROMPT }] },
-        { role: 'model', parts: [{ text: 'Understood. I am AgriSmart Assistant, ready to help with agriculture questions.' }] },
-        ...chatHistory.map((m) => ({
-          role: m.role === 'user' ? 'user' : 'model',
-          parts: [{ text: m.content }],
-        })),
-      ]
-
-      const url = `https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent?key=${API_KEY}`
-      const res = await fetch(url, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ contents, generationConfig: { maxOutputTokens: 500, temperature: 0.7 } }),
+    const res = await fetch(`${BASE_URL}/api/chat`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        message: text
       })
+    });
 
-      if (!res.ok) {
-        const errBody = await res.json().catch(() => ({}))
-        throw new Error(errBody.error?.message || `API error: ${res.status}`)
-      }
+  if (!res.ok) {
+    throw new Error(`HTTP ${res.status}`);
+  }
 
-      const data = await res.json()
-      const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || 'Sorry, I could not generate a response.'
-      setMessages([...updated, { role: 'assistant', content: reply }])
+  const data = await res.json();
+
+  setMessages([...updated, {
+    role: 'assistant',
+    content: data.reply
+  }]);
     } catch (err) {
       setMessages([...updated, {
         role: 'assistant',

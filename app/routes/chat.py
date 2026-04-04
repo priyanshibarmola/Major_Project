@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 import os
-import google.generativeai as genai
+from google import genai
 
 router = APIRouter()
 

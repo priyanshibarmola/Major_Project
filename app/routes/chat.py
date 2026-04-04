@@ -19,7 +19,7 @@ async def chat(data: dict):
 
     try:
         response = client.models.generate_content(
-            model="gemini-1.5-flash",
+            model="gemini-2.5-flash",
             contents=message
         )
         return {"reply": response.text}

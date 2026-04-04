@@ -62,7 +62,7 @@ export default function Analyze() {
     setResult(null)
     try {
       const base = API_URL.replace(/\/$/, '')
-      const res = await fetch(`${base}/analyze`, {
+      const res = await fetch(`${base}/api/analyze`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

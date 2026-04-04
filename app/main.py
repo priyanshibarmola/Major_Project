@@ -13,7 +13,6 @@ from app.services import predict_crop, predict_yield
 from app.soil_engine import compute_soil_health
 from app.fertilizer_engine import recommend_fertilizer
 
-app.include_router(chat_router)
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
@@ -22,6 +21,7 @@ app = FastAPI(
     version="2.0"
 )
 
+app.include_router(chat_router)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],

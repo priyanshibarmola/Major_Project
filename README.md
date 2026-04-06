@@ -1,10 +1,49 @@
-Create a modern standalone React UI for an agriculture-based suggestion app called "AgriSmart".
+🌾 AgriSmart is an AI-powered agriculture assistant that helps farmers and researchers make data-driven decisions using soil analysis, crop prediction, yield estimation, and fertilizer recommendations.
 
-Requirements:
-- Use Tailwind CSS
-- Clean, minimal, modern design
-- Earthy color palette (green, brown, beige)
-- Mobile responsive
+It combines Machine Learning + FastAPI + React (Vite) to deliver real-time agricultural insights.
+
+🚀 Features
+🌱 Crop Recommendation
+- Predicts the best crop based on soil nutrients and weather
+- Provides Top 3 crop suggestions with confidence scores
+
+📊 Yield Prediction
+- Estimates crop yield using trained ML models
+- Built using XGBoost regression
+
+🧪 Soil Health Analysis
+- Calculates soil health score (0–100)
+- Classifies soil as:
+   - Excellent
+   - Good
+   - Moderate
+   - Poor
+
+🌿 Fertilizer Recommendation
+- Suggests fertilizers based on nutrient deficiencies
+- Covers:
+   - Macronutrients (N, P, K)
+   - Micronutrients (Zn, Fe, Mn, B, S)
+   - pH correction
+
+🤖 AI Chatbot (Gemini API)
+- Integrated chatbot for agricultural queries
+- Powered by Google Gemini (gemini-2.5-flash)
+
+🏗️ Tech Stack
+- Backend
+   - FastAPI
+   - Scikit-learn
+   - XGBoost
+   - NumPy
+   - Joblib
+
+- Frontend
+   - React (Vite)
+   - Tailwind CSS
+
+- AI Integration
+   - Google Gemini API (google-genai)
 
 Main Sections:
 1. Top Navbar with logo and weather info
@@ -33,15 +72,27 @@ ML-powered agricultural analysis: crop recommendations, yield prediction, soil h
 ## Project Structure
 
 ```
-├── app/              # FastAPI backend (API + serves built frontend)
-│   ├── main.py       # API endpoints + static file serving
-│   ├── services.py   # ML predictions (crop, yield)
-│   ├── models/       # Trained models
-│   └── ...
-├── frontend/         # React + Vite UI (built into dist/, served by backend)
-├── train/            # Model training scripts
-├── run.sh            # Build frontend + start integrated server
-└── requirements.txt
+   ├── app/
+   │   ├── main.py                # FastAPI entry point
+   │   ├── schemas.py            # Request schema
+   │   ├── services.py           # ML prediction logic
+   │   ├── soil_engine.py        # Soil health scoring   
+   │   ├── fertilizer_engine.py  # Fertilizer logic
+   │   ├── routes/
+   │   │   └── chat.py           # Chatbot API
+   │   └── models/               # Trained ML models  
+   │
+   ├── frontend/                 # React frontend (Vite)
+   │
+   ├── training/
+   │   ├── train_crop.py
+   │   ├── train_yield.py
+   │   └── prepare_yield_dataset.py
+   │
+   ├── datasets/                 # Dataset files
+   ├── requirements.txt
+   ├── run.sh
+   └── README.md
 ```
 
 ## Quick Start
